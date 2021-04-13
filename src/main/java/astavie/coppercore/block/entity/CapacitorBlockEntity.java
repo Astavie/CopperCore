@@ -44,8 +44,7 @@ public class CapacitorBlockEntity extends BlockEntity implements ICapacitor {
             ICapacitor.cacheNetwork(world, pos, dir -> true, blockEntity);
         }
 
-        // Print
-        System.out.println(blockEntity.network);
+        // TODO: Do stuff
     }
 
     @Override

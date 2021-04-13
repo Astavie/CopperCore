@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "on=true": {
+            "model": "coppercore:block/copper_capacitor"
+        },
+        "on=false": {
+            "model": "coppercore:block/copper_capacitor_off"
+        }
+    }
+}

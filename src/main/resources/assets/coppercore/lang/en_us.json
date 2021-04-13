@@ -1,0 +1,10 @@
+{
+    "block.coppercore.copper_capacitor": "Copper Capacitor",
+    "block.coppercore.exposed_copper_capacitor": "Exposed Capacitor",
+    "block.coppercore.weathered_copper_capacitor": "Weathered Capacitor",
+    "block.coppercore.oxidized_copper_capacitor": "Oxidized Capacitor",
+    "block.coppercore.waxed_copper_capacitor": "Waxed Copper Capacitor",
+    "block.coppercore.waxed_exposed_copper_capacitor": "Waxed Exposed Capacitor",
+    "block.coppercore.waxed_weathered_copper_capacitor": "Waxed Weathered Capacitor",
+    "block.coppercore.waxed_oxidized_copper_capacitor": "Waxed Oxidized Capacitor"
+}

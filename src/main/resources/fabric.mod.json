@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "coppercore",
+  "version": "${version}",
+  "name": "Copper Core",
+  "description": "A minecraft mod that adds energy to copper blocks!",
+  "authors": [
+    "Astavie"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/copper-core/",
+    "sources": "https://github.com/astavie/copper-core"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/coppercore/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "astavie.coppercore.CopperCore"
+    ],
+    "client": [
+      "astavie.coppercore.client.CopperCoreClient"
+    ]
+  },
+  "mixins": [
+    "coppercore.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "*"
+  }
+}

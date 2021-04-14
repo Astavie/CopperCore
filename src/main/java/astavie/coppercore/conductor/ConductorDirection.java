@@ -7,9 +7,9 @@ import net.minecraft.util.math.Direction;
 public class ConductorDirection {
 
     public final @NotNull Direction direction;
-    public final int mask;
+    public final byte mask;
 
-    public ConductorDirection(@NotNull Direction direction, int mask) {
+    public ConductorDirection(@NotNull Direction direction, byte mask) {
         this.direction = direction;
         this.mask = mask;
     }

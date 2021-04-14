@@ -3,7 +3,8 @@ package astavie.coppercore.block.entity;
 import java.util.Set;
 
 import astavie.coppercore.CopperCore;
-import astavie.coppercore.block.ICapacitor;
+import astavie.coppercore.conductor.ConductorProvider;
+import astavie.coppercore.conductor.ICapacitor;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -41,10 +42,11 @@ public class CapacitorBlockEntity extends BlockEntity implements ICapacitor {
 
         // Get network
         if (world.getTime() != blockEntity.lastCache) {
-            ICapacitor.cacheNetwork(world, pos, dir -> true, blockEntity);
+            ICapacitor.cacheNetwork(world, pos, dir -> ConductorProvider.FULL, blockEntity);
         }
 
-        // TODO: Do stuff
+        // Print
+        System.out.println(pos + " is connected to " + (blockEntity.network.size() - 1) + " other capacitors.");
     }
 
     @Override

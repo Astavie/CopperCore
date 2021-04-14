@@ -1,11 +1,11 @@
 package astavie.coppercore;
 
-import org.jetbrains.annotations.NotNull;
-
 import astavie.coppercore.block.CapacitorBlock;
-import astavie.coppercore.block.ICapacitor;
-import astavie.coppercore.block.IConductor;
 import astavie.coppercore.block.entity.CapacitorBlockEntity;
+import astavie.coppercore.conductor.ConductorDirection;
+import astavie.coppercore.conductor.ConductorProvider;
+import astavie.coppercore.conductor.ICapacitor;
+import astavie.coppercore.conductor.IConductor;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
@@ -15,12 +15,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Oxidizable.OxidizationLevel;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.enums.SlabType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
 public class CopperCore implements ModInitializer {
@@ -38,18 +35,15 @@ public class CopperCore implements ModInitializer {
 
 	public static final String MOD_ID = "coppercore";
 
-	public static final BlockApiLookup<IConductor, @NotNull Direction> CONDUCTOR = BlockApiLookup
-			.get(new Identifier(MOD_ID, "conductor"), IConductor.class, Direction.class);
-	public static final BlockApiLookup<ICapacitor, @NotNull Direction> CAPACITOR = BlockApiLookup
-			.get(new Identifier(MOD_ID, "capacitor"), ICapacitor.class, Direction.class);
+	public static final BlockApiLookup<IConductor, ConductorDirection> CONDUCTOR = BlockApiLookup
+			.get(new Identifier(MOD_ID, "conductor"), IConductor.class, ConductorDirection.class);
+	public static final BlockApiLookup<ICapacitor, ConductorDirection> CAPACITOR = BlockApiLookup
+			.get(new Identifier(MOD_ID, "capacitor"), ICapacitor.class, ConductorDirection.class);
 
-	public static final BlockApiProvider<IConductor, @NotNull Direction> CONDUCTOR_FULL = (world, pos, state, entity,
-			context) -> dir -> true;
-	public static final BlockApiProvider<IConductor, @NotNull Direction> CONDUCTOR_SLAB = (world, pos, state, entity,
-			context) -> (context == Direction.DOWN && state.get(Properties.SLAB_TYPE) == SlabType.TOP)
-					|| (context == Direction.UP && state.get(Properties.SLAB_TYPE) == SlabType.BOTTOM) ? null
-							: dir -> (dir != Direction.DOWN || state.get(Properties.SLAB_TYPE) != SlabType.TOP)
-									&& (dir != Direction.UP || state.get(Properties.SLAB_TYPE) != SlabType.BOTTOM);
+	public static final BlockApiProvider<IConductor, ConductorDirection> CONDUCTOR_FULL = new ConductorProvider.Full();
+	public static final BlockApiProvider<IConductor, ConductorDirection> CONDUCTOR_SLAB = new ConductorProvider.Slab();
+	public static final BlockApiProvider<IConductor, ConductorDirection> CONDUCTOR_STAIRS = new ConductorProvider.Stairs();
+	public static final BlockApiProvider<IConductor, ConductorDirection> CONDUCTOR_ROD = new ConductorProvider.Rod();
 
 	@Override
 	public void onInitialize() {
@@ -82,19 +76,21 @@ public class CopperCore implements ModInitializer {
 		// LOOKUP APIS
 		CONDUCTOR.registerForBlocks(CONDUCTOR_FULL, Blocks.COPPER_BLOCK, Blocks.EXPOSED_COPPER, Blocks.WEATHERED_COPPER,
 				Blocks.OXIDIZED_COPPER, Blocks.CUT_COPPER, Blocks.EXPOSED_CUT_COPPER, Blocks.WEATHERED_CUT_COPPER,
-				Blocks.OXIDIZED_CUT_COPPER, Blocks.CUT_COPPER_STAIRS, Blocks.EXPOSED_CUT_COPPER_STAIRS,
-				Blocks.WEATHERED_CUT_COPPER_STAIRS, Blocks.OXIDIZED_CUT_COPPER_STAIRS, Blocks.WAXED_COPPER_BLOCK,
-				Blocks.WAXED_EXPOSED_COPPER, Blocks.WAXED_WEATHERED_COPPER, Blocks.WAXED_OXIDIZED_COPPER,
-				Blocks.WAXED_CUT_COPPER, Blocks.WAXED_EXPOSED_CUT_COPPER, Blocks.WAXED_WEATHERED_CUT_COPPER,
-				Blocks.WAXED_OXIDIZED_CUT_COPPER, Blocks.WAXED_CUT_COPPER_STAIRS,
-				Blocks.WAXED_EXPOSED_CUT_COPPER_STAIRS, Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS,
-				Blocks.WAXED_OXIDIZED_CUT_COPPER_STAIRS, COPPER_CAPACITOR, EXPOSED_COPPER_CAPACITOR,
-				WEATHERED_COPPER_CAPACITOR, OXIDIZED_COPPER_CAPACITOR, WAXED_COPPER_CAPACITOR,
-				WAXED_EXPOSED_COPPER_CAPACITOR, WAXED_WEATHERED_COPPER_CAPACITOR, WAXED_OXIDIZED_COPPER_CAPACITOR);
+				Blocks.OXIDIZED_CUT_COPPER, Blocks.WAXED_COPPER_BLOCK, Blocks.WAXED_EXPOSED_COPPER,
+				Blocks.WAXED_WEATHERED_COPPER, Blocks.WAXED_OXIDIZED_COPPER, Blocks.WAXED_CUT_COPPER,
+				Blocks.WAXED_EXPOSED_CUT_COPPER, Blocks.WAXED_WEATHERED_CUT_COPPER, Blocks.WAXED_OXIDIZED_CUT_COPPER,
+				COPPER_CAPACITOR, EXPOSED_COPPER_CAPACITOR, WEATHERED_COPPER_CAPACITOR, OXIDIZED_COPPER_CAPACITOR,
+				WAXED_COPPER_CAPACITOR, WAXED_EXPOSED_COPPER_CAPACITOR, WAXED_WEATHERED_COPPER_CAPACITOR,
+				WAXED_OXIDIZED_COPPER_CAPACITOR);
 		CONDUCTOR.registerForBlocks(CONDUCTOR_SLAB, Blocks.CUT_COPPER_SLAB, Blocks.EXPOSED_CUT_COPPER_SLAB,
 				Blocks.WEATHERED_CUT_COPPER_SLAB, Blocks.OXIDIZED_CUT_COPPER_SLAB, Blocks.WAXED_CUT_COPPER_SLAB,
 				Blocks.WAXED_EXPOSED_CUT_COPPER_SLAB, Blocks.WAXED_WEATHERED_CUT_COPPER_SLAB,
 				Blocks.WAXED_OXIDIZED_CUT_COPPER_SLAB);
+		CONDUCTOR.registerForBlocks(CONDUCTOR_STAIRS, Blocks.CUT_COPPER_STAIRS, Blocks.EXPOSED_CUT_COPPER_STAIRS,
+				Blocks.WEATHERED_CUT_COPPER_STAIRS, Blocks.OXIDIZED_CUT_COPPER_STAIRS, Blocks.WAXED_CUT_COPPER_STAIRS,
+				Blocks.WAXED_EXPOSED_CUT_COPPER_STAIRS, Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS,
+				Blocks.WAXED_OXIDIZED_CUT_COPPER_STAIRS);
+		CONDUCTOR.registerForBlocks(CONDUCTOR_ROD, Blocks.LIGHTNING_ROD);
 
 		CAPACITOR.registerSelf(CAPACITOR_BLOCK_ENTITY);
 	}

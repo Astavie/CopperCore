@@ -1,4 +1,4 @@
-package astavie.coppercore.block;
+package astavie.coppercore.conductor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -43,11 +43,15 @@ public interface ICapacitor {
         for (Direction dir : Direction.values()) {
             BlockPos next = pos.offset(dir);
 
-            if (!current.conductsTo(dir) || seen.contains(next.asLong()))
+            // TODO: This won't work for blocks that are comprised of multiple parts
+            if (seen.contains(next.asLong())) {
                 continue;
+            }
 
-            IConductor conductor = CopperCore.CONDUCTOR.find(world, next, dir.getOpposite());
-            ICapacitor capacitor = CopperCore.CAPACITOR.find(world, next, dir.getOpposite());
+            ConductorDirection cdir = new ConductorDirection(dir.getOpposite(), current.getMask(dir));
+
+            IConductor conductor = CopperCore.CONDUCTOR.find(world, next, cdir);
+            ICapacitor capacitor = CopperCore.CAPACITOR.find(world, next, cdir);
 
             if (capacitor != null) {
                 set.add(capacitor);

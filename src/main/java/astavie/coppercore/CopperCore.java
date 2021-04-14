@@ -1,5 +1,7 @@
 package astavie.coppercore;
 
+import org.jetbrains.annotations.NotNull;
+
 import astavie.coppercore.block.CapacitorBlock;
 import astavie.coppercore.block.entity.CapacitorBlockEntity;
 import astavie.coppercore.conductor.ConductorDirection;
@@ -35,15 +37,15 @@ public class CopperCore implements ModInitializer {
 
 	public static final String MOD_ID = "coppercore";
 
-	public static final BlockApiLookup<IConductor, ConductorDirection> CONDUCTOR = BlockApiLookup
+	public static final BlockApiLookup<IConductor, @NotNull ConductorDirection> CONDUCTOR = BlockApiLookup
 			.get(new Identifier(MOD_ID, "conductor"), IConductor.class, ConductorDirection.class);
-	public static final BlockApiLookup<ICapacitor, ConductorDirection> CAPACITOR = BlockApiLookup
+	public static final BlockApiLookup<ICapacitor, @NotNull ConductorDirection> CAPACITOR = BlockApiLookup
 			.get(new Identifier(MOD_ID, "capacitor"), ICapacitor.class, ConductorDirection.class);
 
-	public static final BlockApiProvider<IConductor, ConductorDirection> CONDUCTOR_FULL = new ConductorProvider.Full();
-	public static final BlockApiProvider<IConductor, ConductorDirection> CONDUCTOR_SLAB = new ConductorProvider.Slab();
-	public static final BlockApiProvider<IConductor, ConductorDirection> CONDUCTOR_STAIRS = new ConductorProvider.Stairs();
-	public static final BlockApiProvider<IConductor, ConductorDirection> CONDUCTOR_ROD = new ConductorProvider.Rod();
+	public static final BlockApiProvider<IConductor, @NotNull ConductorDirection> CONDUCTOR_FULL = new ConductorProvider.Full();
+	public static final BlockApiProvider<IConductor, @NotNull ConductorDirection> CONDUCTOR_SLAB = new ConductorProvider.Slab();
+	public static final BlockApiProvider<IConductor, @NotNull ConductorDirection> CONDUCTOR_STAIRS = new ConductorProvider.Stairs();
+	public static final BlockApiProvider<IConductor, @NotNull ConductorDirection> CONDUCTOR_ROD = new ConductorProvider.Rod();
 
 	@Override
 	public void onInitialize() {

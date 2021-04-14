@@ -101,12 +101,12 @@ public abstract class ConductorProvider implements BlockApiProvider<IConductor, 
             }
 
             SlabType type = state.get(Properties.SLAB_TYPE);
-            if (isOpposite(type, context.direction)) {
-                return null;
-            }
-
             if (type == SlabType.DOUBLE) {
                 return dir -> FULL;
+            }
+
+            if (isOpposite(type, context.direction)) {
+                return null;
             }
 
             byte mask = type == SlabType.TOP ? HALF_TOP : HALF_BOTTOM;

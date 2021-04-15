@@ -4,10 +4,12 @@ import java.util.Random;
 
 import astavie.coppercore.CopperCore;
 import astavie.coppercore.block.entity.CapacitorBlockEntity;
+import astavie.coppercore.conductor.ICapacitor;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 import net.minecraft.block.OxidizableBlock;
@@ -19,6 +21,7 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 public class CapacitorBlock extends OxidizableBlock implements BlockEntityProvider {
@@ -38,6 +41,22 @@ public class CapacitorBlock extends OxidizableBlock implements BlockEntityProvid
                 .sounds(BlockSoundGroup.COPPER).luminance(state -> state.get(ON) ? 10 : 0));
         this.waxed = waxed;
         setDefaultState(stateManager.getDefaultState().with(ON, false));
+    }
+
+    @Override
+    public boolean hasComparatorOutput(BlockState state) {
+        return state.get(ON);
+    }
+
+    @Override
+    public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+        ICapacitor capacitor = getCapacitor(world, pos, state);
+        return MathHelper.floor((float) capacitor.getEnergy() / capacitor.getMaxEnergy() * 14.0F)
+                + (capacitor.getEnergy() > 0 ? 1 : 0);
+    }
+
+    private ICapacitor getCapacitor(World world, BlockPos pos, BlockState state) {
+        return (ICapacitor) world.getBlockEntity(pos);
     }
 
     @Override

@@ -3,6 +3,7 @@ package astavie.coppercore.block.entity;
 import java.util.Set;
 
 import astavie.coppercore.CopperCore;
+import astavie.coppercore.block.CapacitorBlock;
 import astavie.coppercore.conductor.ConductorProvider;
 import astavie.coppercore.conductor.ICapacitor;
 import net.minecraft.block.BlockState;
@@ -45,8 +46,9 @@ public class CapacitorBlockEntity extends BlockEntity implements ICapacitor {
             ICapacitor.cacheNetwork(world, pos, dir -> ConductorProvider.FULL, blockEntity);
         }
 
-        // Print
-        System.out.println(pos + " is connected to " + (blockEntity.network.size() - 1) + " other capacitors.");
+        // TODO: Test
+        System.out.println(pos + " is in a network with " + blockEntity.network.size() + " capacitors.");
+        blockEntity.giveEnergy(10);
     }
 
     @Override
@@ -61,22 +63,42 @@ public class CapacitorBlockEntity extends BlockEntity implements ICapacitor {
 
     @Override
     public int giveEnergy(int energy) {
+        int leftover = 0;
+        int oldEnergy = this.energy;
+
+        // Set energy
         this.energy += energy;
         if (energy > getMaxEnergy()) {
-            int leftover = this.energy - getMaxEnergy();
+            leftover = this.energy - getMaxEnergy();
             this.energy = getMaxEnergy();
-            return leftover;
         }
-        return 0;
+
+        // Set on
+        if (oldEnergy == 0 && energy > 0) {
+            world.setBlockState(pos, getCachedState().with(CapacitorBlock.ON, true));
+        }
+        world.updateComparators(pos, getCachedState().getBlock());
+
+        return leftover;
     }
 
     @Override
     public int takeEnergy(int energy) {
+        int oldEnergy = this.energy;
+
+        // Set energy
         this.energy -= energy;
         if (this.energy < 0) {
             energy += this.energy;
             this.energy = 0;
         }
+
+        // Set off
+        if (oldEnergy > 0 && this.energy == 0) {
+            world.setBlockState(pos, getCachedState().with(CapacitorBlock.ON, false));
+        }
+        world.updateComparators(pos, getCachedState().getBlock());
+
         return energy;
     }
 

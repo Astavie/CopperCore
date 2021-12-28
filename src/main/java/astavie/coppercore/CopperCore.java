@@ -3,6 +3,7 @@ package astavie.coppercore;
 import org.jetbrains.annotations.NotNull;
 
 import astavie.coppercore.block.CapacitorBlock;
+import astavie.coppercore.block.WaxedCapacitorBlock;
 import astavie.coppercore.block.entity.CapacitorBlockEntity;
 import astavie.coppercore.conductor.ConductorDirection;
 import astavie.coppercore.conductor.ConductorProvider;
@@ -13,9 +14,10 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup.BlockApiProvider;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Oxidizable.OxidizationLevel;
+import net.minecraft.block.Oxidizable.OxidationLevel;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroup;
@@ -50,22 +52,33 @@ public class CopperCore implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// BLOCKS
-		COPPER_CAPACITOR = registerBlock(new CapacitorBlock(OxidizationLevel.UNAFFECTED, false), "copper_capacitor");
-		EXPOSED_COPPER_CAPACITOR = registerBlock(new CapacitorBlock(OxidizationLevel.EXPOSED, false),
+		COPPER_CAPACITOR = registerBlock(new CapacitorBlock(OxidationLevel.UNAFFECTED),
+				"copper_capacitor");
+		EXPOSED_COPPER_CAPACITOR = registerBlock(new CapacitorBlock(OxidationLevel.EXPOSED),
 				"exposed_copper_capacitor");
-		WEATHERED_COPPER_CAPACITOR = registerBlock(new CapacitorBlock(OxidizationLevel.WEATHERED, false),
+		WEATHERED_COPPER_CAPACITOR = registerBlock(new CapacitorBlock(OxidationLevel.WEATHERED),
 				"weathered_copper_capacitor");
-		OXIDIZED_COPPER_CAPACITOR = registerBlock(new CapacitorBlock(OxidizationLevel.OXIDIZED, false),
+		OXIDIZED_COPPER_CAPACITOR = registerBlock(new CapacitorBlock(OxidationLevel.OXIDIZED),
 				"oxidized_copper_capacitor");
 
-		WAXED_COPPER_CAPACITOR = registerBlock(new CapacitorBlock(OxidizationLevel.UNAFFECTED, true),
+		WAXED_COPPER_CAPACITOR = registerBlock(new WaxedCapacitorBlock(OxidationLevel.UNAFFECTED),
 				"waxed_copper_capacitor");
-		WAXED_EXPOSED_COPPER_CAPACITOR = registerBlock(new CapacitorBlock(OxidizationLevel.EXPOSED, true),
+		WAXED_EXPOSED_COPPER_CAPACITOR = registerBlock(new WaxedCapacitorBlock(OxidationLevel.EXPOSED),
 				"waxed_exposed_copper_capacitor");
-		WAXED_WEATHERED_COPPER_CAPACITOR = registerBlock(new CapacitorBlock(OxidizationLevel.WEATHERED, true),
+		WAXED_WEATHERED_COPPER_CAPACITOR = registerBlock(new WaxedCapacitorBlock(OxidationLevel.WEATHERED),
 				"waxed_weathered_copper_capacitor");
-		WAXED_OXIDIZED_COPPER_CAPACITOR = registerBlock(new CapacitorBlock(OxidizationLevel.OXIDIZED, true),
+		WAXED_OXIDIZED_COPPER_CAPACITOR = registerBlock(new WaxedCapacitorBlock(OxidationLevel.OXIDIZED),
 				"waxed_oxidized_copper_capacitor");
+		
+		// Oxidizing and waxing
+		OxidizableBlocksRegistry.registerOxidizableBlockPair(COPPER_CAPACITOR, EXPOSED_COPPER_CAPACITOR);
+		OxidizableBlocksRegistry.registerOxidizableBlockPair(EXPOSED_COPPER_CAPACITOR, WEATHERED_COPPER_CAPACITOR);
+		OxidizableBlocksRegistry.registerOxidizableBlockPair(WEATHERED_COPPER_CAPACITOR, OXIDIZED_COPPER_CAPACITOR);
+
+		OxidizableBlocksRegistry.registerWaxableBlockPair(COPPER_CAPACITOR, WAXED_COPPER_CAPACITOR);
+		OxidizableBlocksRegistry.registerWaxableBlockPair(EXPOSED_COPPER_CAPACITOR, WAXED_EXPOSED_COPPER_CAPACITOR);
+		OxidizableBlocksRegistry.registerWaxableBlockPair(WEATHERED_COPPER_CAPACITOR, WAXED_WEATHERED_COPPER_CAPACITOR);
+		OxidizableBlocksRegistry.registerWaxableBlockPair(OXIDIZED_COPPER_CAPACITOR, WAXED_OXIDIZED_COPPER_CAPACITOR);
 
 		// BLOCK ENTITIES
 		CAPACITOR_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,

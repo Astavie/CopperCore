@@ -24,10 +24,9 @@ public class CapacitorBlockEntity extends BlockEntity implements ICapacitor {
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
+    public void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
         nbt.putInt("energy", energy);
-        return nbt;
     }
 
     @Override
@@ -68,7 +67,7 @@ public class CapacitorBlockEntity extends BlockEntity implements ICapacitor {
 
         // Set energy
         this.energy += energy;
-        if (energy > getMaxEnergy()) {
+        if (this.energy > getMaxEnergy()) {
             leftover = this.energy - getMaxEnergy();
             this.energy = getMaxEnergy();
         }

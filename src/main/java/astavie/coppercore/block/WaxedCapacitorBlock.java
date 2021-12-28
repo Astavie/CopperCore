@@ -7,29 +7,24 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.block.OxidizableBlock;
+import net.minecraft.block.Oxidizable.OxidationLevel;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.state.StateManager.Builder;
-import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class CapacitorBlock extends OxidizableBlock implements BlockEntityProvider {
+public class WaxedCapacitorBlock extends Block implements BlockEntityProvider {
 
-    public static final BooleanProperty ON = BooleanProperty.of("on");
-    public static final MapColor[] COLOR = new MapColor[] { MapColor.ORANGE, MapColor.TERRACOTTA_LIGHT_GRAY, MapColor.DARK_AQUA, MapColor.TEAL };
-
-    public CapacitorBlock(OxidationLevel level) {
-        super(level, FabricBlockSettings.of(Material.METAL, COLOR[level.ordinal()])
+    public WaxedCapacitorBlock(OxidationLevel level) {
+        super(FabricBlockSettings.of(Material.METAL, CapacitorBlock.COLOR[level.ordinal()])
                 .requiresTool().strength(3.0F, 6.0F)
-                .sounds(BlockSoundGroup.COPPER).luminance(state -> state.get(ON) ? 10 : 0));
-        setDefaultState(stateManager.getDefaultState().with(ON, false));
+                .sounds(BlockSoundGroup.COPPER).luminance(state -> state.get(CapacitorBlock.ON) ? 10 : 0));
+        setDefaultState(stateManager.getDefaultState().with(CapacitorBlock.ON, false));
     }
 
     @Override
@@ -42,7 +37,7 @@ public class CapacitorBlock extends OxidizableBlock implements BlockEntityProvid
 
     @Override
     public boolean hasComparatorOutput(BlockState state) {
-        return state.get(ON);
+        return state.get(CapacitorBlock.ON);
     }
 
     @Override
@@ -56,8 +51,8 @@ public class CapacitorBlock extends OxidizableBlock implements BlockEntityProvid
     }
 
     @Override
-    protected void appendProperties(Builder<Block, BlockState> builder) {
-        builder.add(ON);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(CapacitorBlock.ON);
     }
 
     @Override

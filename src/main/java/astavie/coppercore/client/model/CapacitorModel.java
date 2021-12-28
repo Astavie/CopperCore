@@ -22,7 +22,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Oxidizable.OxidizationLevel;
+import net.minecraft.block.Oxidizable.OxidationLevel;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.ModelBakeSettings;
@@ -31,9 +31,9 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -41,29 +41,27 @@ import net.minecraft.world.BlockRenderView;
 
 public class CapacitorModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
-    private static final SpriteIdentifier COPPER_TOP = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+    private static final SpriteIdentifier COPPER_TOP = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE,
             new Identifier("minecraft:block/copper_block"));
-    private static final SpriteIdentifier EXPOSED_TOP = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+    private static final SpriteIdentifier EXPOSED_TOP = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE,
             new Identifier("minecraft:block/exposed_copper"));
-    private static final SpriteIdentifier WEATHERED_TOP = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+    private static final SpriteIdentifier WEATHERED_TOP = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE,
             new Identifier("minecraft:block/weathered_copper"));
-    private static final SpriteIdentifier OXIDIZED_TOP = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+    private static final SpriteIdentifier OXIDIZED_TOP = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE,
             new Identifier("minecraft:block/oxidized_copper"));
 
-    private static final SpriteIdentifier COPPER_SIDE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+    private static final SpriteIdentifier COPPER_SIDE = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE,
             new Identifier(CopperCore.MOD_ID, "block/copper_capacitor"));
-    private static final SpriteIdentifier EXPOSED_SIDE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+    private static final SpriteIdentifier EXPOSED_SIDE = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE,
             new Identifier(CopperCore.MOD_ID, "block/exposed_copper_capacitor"));
-    private static final SpriteIdentifier WEATHERED_SIDE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+    private static final SpriteIdentifier WEATHERED_SIDE = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE,
             new Identifier(CopperCore.MOD_ID, "block/weathered_copper_capacitor"));
-    private static final SpriteIdentifier OXIDIZED_SIDE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+    private static final SpriteIdentifier OXIDIZED_SIDE = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE,
             new Identifier(CopperCore.MOD_ID, "block/oxidized_copper_capacitor"));
 
-    private static final SpriteIdentifier[] TOP = new SpriteIdentifier[] { COPPER_TOP, EXPOSED_TOP, WEATHERED_TOP,
-            OXIDIZED_TOP };
-    private static final SpriteIdentifier[] SIDE = new SpriteIdentifier[] { COPPER_SIDE, EXPOSED_SIDE, WEATHERED_SIDE,
-            OXIDIZED_SIDE };
-    private static final SpriteIdentifier LIGHT = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+    private static final SpriteIdentifier[] TOP = new SpriteIdentifier[] { COPPER_TOP, EXPOSED_TOP, WEATHERED_TOP, OXIDIZED_TOP };
+    private static final SpriteIdentifier[] SIDE = new SpriteIdentifier[] { COPPER_SIDE, EXPOSED_SIDE, WEATHERED_SIDE, OXIDIZED_SIDE };
+    private static final SpriteIdentifier LIGHT = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE,
             new Identifier(CopperCore.MOD_ID, "block/capacitor_light"));
 
     private SpriteIdentifier[] SPRITE_IDS = new SpriteIdentifier[3];
@@ -75,7 +73,7 @@ public class CapacitorModel implements UnbakedModel, BakedModel, FabricBakedMode
 
     private Mesh mesh;
 
-    public CapacitorModel(OxidizationLevel level) {
+    public CapacitorModel(OxidationLevel level) {
         SPRITE_IDS[0] = TOP[level.ordinal()];
         SPRITE_IDS[1] = SIDE[level.ordinal()];
         SPRITE_IDS[2] = LIGHT;
@@ -122,7 +120,7 @@ public class CapacitorModel implements UnbakedModel, BakedModel, FabricBakedMode
     }
 
     @Override
-    public Sprite getSprite() {
+    public Sprite getParticleSprite() {
         return SPRITES[0];
     }
 
@@ -142,14 +140,12 @@ public class CapacitorModel implements UnbakedModel, BakedModel, FabricBakedMode
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter,
-            Set<Pair<String, String>> unresolvedTextureReferences) {
+    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
         return Arrays.asList(SPRITE_IDS);
     }
 
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
-            ModelBakeSettings rotationContainer, Identifier modelId) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
         // Get the sprites
         for (int i = 0; i < 3; ++i) {
             SPRITES[i] = textureGetter.apply(SPRITE_IDS[i]);
